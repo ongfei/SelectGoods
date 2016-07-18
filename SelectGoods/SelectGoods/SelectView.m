@@ -18,9 +18,7 @@
 
 @interface SelectView ()<TypeViewDelegate>
 
-@property (nonatomic, strong) NSArray *sizeArr;
-
-@property (nonatomic, strong) NSArray *colorArr;
+@property (nonatomic, strong) NSDictionary *sourceDic;
 /**
  *  选择的sizi color
  */
@@ -30,27 +28,21 @@
  */
 @property (nonatomic, strong) UILabel *buyNumber;
 /**
- *  保存选择的尺寸
+ *  保存选择
  */
-@property (nonatomic, strong) NSString *sizeStr;
-/**
- *  保存选择的颜色
- */
-@property (nonatomic, strong) NSString *colorStr;
+@property (nonatomic, strong) NSMutableDictionary *selectDic;
 
 @end
 
 @implementation SelectView
 
-- (instancetype)initWithFrame:(CGRect)frame andSizeArray:(NSArray *)sizeArray andColorArray:(NSArray *)colorArray {
+- (instancetype)initWithFrame:(CGRect)frame andSourceDic:(NSDictionary *)sourceDictionary {
     
     self = [super initWithFrame:frame];
     
     if (self) {
         
-        self.sizeArr = [sizeArray copy];
-        
-        self.colorArr = [colorArray copy];
+        self.sourceDic = [NSDictionary dictionaryWithDictionary:sourceDictionary];
         
         [self prepareLayout];
     }
@@ -60,8 +52,7 @@
 
 - (void) prepareLayout {
     
-    self.sizeStr = @"";
-    self.colorStr = @"";
+    self.selectDic = [NSMutableDictionary dictionaryWithCapacity:3];
     
     self.backgroundColor = [UIColor clearColor];
     
@@ -130,27 +121,31 @@
     
     [bgView addSubview:scrollView];
     
-    UILabel *sizeLabel = [self customLabelWithFrame:CGRectMake(10, 0, ScreenWidth, 20) andText:@"尺码" andFont:15 andTextClolor:[UIColor blackColor]];
+    UIView *lastView = nil;
     
-    [scrollView addSubview:sizeLabel];
+    CGFloat Height = 0;
     
-    TypeView *sizeType = [[TypeView alloc] initWithFrame:CGRectMake(10, sizeLabel.bottom, ScreenWidth - 20, 50) andSorceArray:self.sizeArr andBaseTag:1000];
+    for (int i = 0; i < self.sourceDic.allKeys.count; i++) {
+        
+        CGFloat top = (lastView == nil ? 0 :lastView.bottom);
+        
+        UILabel *sizeLabel = [self customLabelWithFrame:CGRectMake(10, top, ScreenWidth, 20) andText:self.sourceDic.allKeys[i] andFont:15 andTextClolor:[UIColor blackColor]];
+        
+        [scrollView addSubview:sizeLabel];
+        
+        TypeView *type = [[TypeView alloc] initWithFrame:CGRectMake(10, sizeLabel.bottom, ScreenWidth - 20, 50) andSorceArray:[self.sourceDic objectForKey:self.sourceDic.allKeys[i]] andBaseType:self.sourceDic.allKeys[i]];
+        
+        type.delegate = self;
+        
+        [scrollView addSubview:type];
+        
+        lastView = type;
+        
+        Height += (20 + type.height);
+    }
     
-    sizeType.delegate = self;
     
-    [scrollView addSubview:sizeType];
-    
-    UILabel *colorLabel = [self customLabelWithFrame:CGRectMake(10, sizeType.bottom, ScreenWidth, 20) andText:@"颜色分类" andFont:15 andTextClolor:[UIColor blackColor]];
-    
-    [scrollView addSubview:colorLabel];
-    
-    TypeView *colorType = [[TypeView alloc] initWithFrame:CGRectMake(10, colorLabel.bottom, ScreenWidth - 20, 50) andSorceArray:self.colorArr andBaseTag:2000];
-    
-    colorType.delegate = self;
-    
-    [scrollView addSubview:colorType];
-    
-    UIView *buyNumberBg = [[UIView alloc] initWithFrame:CGRectMake(0, colorType.bottom + 5, ScreenWidth, 50)];
+    UIView *buyNumberBg = [[UIView alloc] initWithFrame:CGRectMake(0, (lastView == nil ? 100 :lastView.bottom + 5), ScreenWidth, 50)];
     
     [scrollView addSubview:buyNumberBg];
     
@@ -201,7 +196,7 @@
     
     
     
-    scrollView.contentSize = CGSizeMake(ScreenWidth, 95 + sizeType.height + colorType.height);
+    scrollView.contentSize = CGSizeMake(ScreenWidth, 50 + Height);
     
     
     
@@ -274,29 +269,22 @@
             break;
             //加入购物车按钮
         case 3002: {
-            if ([self.delegate respondsToSelector:@selector(selectSize:andColor:andBuyNumber:)]) {
+            if ([self.delegate respondsToSelector:@selector(selectWithDic:andBuyNumber:)]) {
                 
-                if ([self.sizeStr isEqualToString:@""] || [self.colorStr isEqualToString:@""]) {
-                    
-                    NSLog(@"增加提示 尺寸 颜色 未选");
-                }else
+                NSLog(@"增加提示 尺寸 颜色 未选");
             
-                [self.delegate selectSize:self.sizeStr andColor:self.colorStr andBuyNumber:[self.buyNumber.text integerValue]];
+                [self.delegate selectWithDic:self.selectDic andBuyNumber:[self.buyNumber.text integerValue]];
             }
         }
             break;
             //立即购买按钮
         case 3003: {
-            if ([self.delegate respondsToSelector:@selector(selectSize:andColor:andBuyNumber:)]) {
-                
-                if ([self.sizeStr isEqualToString:@""] || [self.colorStr isEqualToString:@""]) {
+            if ([self.delegate respondsToSelector:@selector(selectWithDic:andBuyNumber:)]) {
+            
+                NSLog(@"增加提示 尺寸 颜色 未选");
                     
-                    NSLog(@"增加提示 尺寸 颜色 未选");
-                }else
-                    
-                [self.delegate selectSize:self.sizeStr andColor:self.colorStr andBuyNumber:[self.buyNumber.text integerValue]];
+                [self.delegate selectWithDic:self.selectDic andBuyNumber:[self.buyNumber.text integerValue]];
             }
-
         }
             
             break;
@@ -312,24 +300,20 @@
     
 }
 
-- (void)selectBtnWithTag:(NSInteger)tag andBtn:(UIButton *)btn andStute:(BOOL)stute {
+- (void)selectBtnWithbaseType:(NSString *)baseType andBtn:(UIButton *)btn andStute:(BOOL)stute {
     if (stute == YES) {//选中状态
-        
-        NSLog(@"%ld %ld %@",btn.tag,tag,btn.titleLabel.text);
-        if (tag < 2000) {
-            self.sizeStr = [btn currentTitle];
-        }else {
-            self.colorStr = [btn currentTitle];
-        }
+        [self.selectDic setObject:[btn currentTitle] forKey:baseType];
+        NSLog(@"%ld %@",btn.tag,btn.titleLabel.text);
         
     }else {
-        if (tag < 2000) {
-            self.sizeStr = @"";
-        }else {
-            self.colorStr = @"";
-        }
+        [self.selectDic removeObjectForKey:baseType];
     }
-    self.selectLabel.text = [NSString stringWithFormat:@"您选择了: %@  %@",self.sizeStr,self.colorStr];
+    
+    NSMutableString *selectStr = [NSMutableString string];
+    for (NSString *str in self.selectDic.allValues) {
+        [selectStr appendFormat:str,@"  "];
+    }
+    self.selectLabel.text = [NSString stringWithFormat:@"您选择了: %@",selectStr];
     
 //  若有需要  在这里更改库存量 -> 根据size 和color 查询对应的数据
 //    self.stockLabel.text =

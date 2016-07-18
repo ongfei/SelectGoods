@@ -36,10 +36,17 @@
 }
 
 - (void)click {
+    NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+    [dic setValue:@[@"L",@"l",@"M",@"l",@"M",@"l",@"M",@"l",@"M",@"l",@"M",@"l",@"M",@"l",@"M",@"l",@"M"] forKey:@"尺寸"];
+    [dic setValue:@[@"红色",@"蓝色",@"黑色",@"红色",@"蓝色",@"黑色",@"红色",@"蓝色",@"黑色",@"红色",@"蓝色",@"黑色"] forKey:@"颜色"];
+    [dic setValue:@[@"红色",@"蓝色",@"黑色",@"红色",@"蓝色",@"黑色",@"红色",@"蓝色",@"黑色",@"红色",@"蓝色",@"黑色"] forKey:@"色"];
+    
     [UIView animateWithDuration: 0.35 animations: ^{
+        
+        
         _bgView.transform = CGAffineTransformScale(CGAffineTransformIdentity,0.8,0.8);
         _bgView.center = CGPointMake(self.view.center.x, self.view.center.y-50);
-        _selectView = [[SelectView alloc] initWithFrame:self.view.frame andSizeArray:@[@"L",@"l",@"M",@"l",@"M",@"l",@"M",@"l",@"M",@"l",@"M",@"l",@"M",@"l",@"M",@"l",@"M"] andColorArray:@[@"红色",@"蓝色",@"黑色",@"红色",@"蓝色",@"黑色",@"红色",@"蓝色",@"黑色",@"红色",@"蓝色",@"黑色"]];
+        _selectView = [[SelectView alloc] initWithFrame:self.view.frame andSourceDic:dic];
         
         _selectView.icoView.image = [UIImage imageNamed:@"close@3x"];
         
@@ -51,8 +58,8 @@
 }
 
 
-- (void)selectSize:(NSString *)sizeStr andColor:(NSString *)colorStr andBuyNumber:(NSInteger)buyNumber {
-    NSLog(@"选择的尺寸 --> %@, 选择的颜色 --> %@, 购买的数量 --> %ld",sizeStr, colorStr, buyNumber);
+- (void)selectWithDic:(NSDictionary *)dic andBuyNumber:(NSInteger)buyNumber {
+    NSLog(@"选择 --> %@,, 购买的数量 --> %ld",dic, buyNumber);
     [self dismiss];
 }
 

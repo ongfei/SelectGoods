@@ -21,7 +21,7 @@
 
 @implementation TypeView
 
-- (instancetype)initWithFrame:(CGRect)frame andSorceArray:(NSArray *)arr andBaseTag:(NSInteger) baseTag {
+- (instancetype)initWithFrame:(CGRect)frame andSorceArray:(NSArray *)arr andBaseType:(NSString *)baseType {
     self = [super initWithFrame:frame];
     if (self) {
         
@@ -57,7 +57,7 @@
             
             [self addSubview:btn];
             
-            btn.tag = baseTag + i;
+            btn.tag = 1000 + i;
             
             [btn addTarget:self action:@selector(touchBtn:) forControlEvents:UIControlEventTouchUpInside];
             
@@ -71,6 +71,8 @@
         [self addSubview:view];
         
         self.height = Height + 21;
+        
+        self.baseType = baseType;
         
     }
     return self;
@@ -97,8 +99,8 @@
 
     if (self.stateBtn != btn) {
             }
-    if ([self.delegate respondsToSelector:@selector(selectBtnWithTag:andBtn:andStute:)]) {
-        [self.delegate selectBtnWithTag:btn.tag andBtn:btn andStute:btn.selected];
+    if ([self.delegate respondsToSelector:@selector(selectBtnWithbaseType:andBtn:andStute:)]) {
+        [self.delegate selectBtnWithbaseType:self.baseType andBtn:btn andStute:btn.selected];
     }
     self.stateBtn = btn;
 //    btn.selected = !btn.selected;

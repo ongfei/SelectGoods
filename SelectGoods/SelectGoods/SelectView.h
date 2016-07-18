@@ -13,7 +13,7 @@
 
 - (void)dismiss;
 
-- (void)selectSize:(NSString *)sizeStr andColor:(NSString *)colorStr andBuyNumber:(NSInteger)buyNumber;
+- (void)selectWithDic:(NSDictionary *)dic andBuyNumber:(NSInteger)buyNumber;
 
 @end
 @interface SelectView : UIView
@@ -32,7 +32,7 @@
  *  @param sizeArray  尺寸数组
  *  @param colorArray 颜色数组
  */
-- (instancetype)initWithFrame:(CGRect)frame andSizeArray:(NSArray *)sizeArray andColorArray:(NSArray *)colorArray;
+- (instancetype)initWithFrame:(CGRect)frame andSourceDic:(NSDictionary *)sourceDictionary;
 
 /**
  *  顶部物品信息

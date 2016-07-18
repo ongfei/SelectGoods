@@ -10,12 +10,13 @@
 
 @protocol TypeViewDelegate <NSObject>
 
-- (void)selectBtnWithTag:(NSInteger)tag andBtn:(UIButton *)btn andStute:(BOOL)stute;
+- (void)selectBtnWithbaseType:(NSString *)baseType andBtn:(UIButton *)btn andStute:(BOOL)stute;
 
 @end
 @interface TypeView : UIView
 
+@property (nonatomic, assign) NSString *baseType;
 @property (nonatomic, weak) id<TypeViewDelegate> delegate;
 
-- (instancetype)initWithFrame:(CGRect)frame andSorceArray:(NSArray *)arr andBaseTag:(NSInteger) baseTag;
+- (instancetype)initWithFrame:(CGRect)frame andSorceArray:(NSArray *)arr andBaseType:(NSString *)baseType;
 @end
