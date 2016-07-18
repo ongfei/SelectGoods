@@ -1,5 +1,5 @@
 # SelectGoods
-![Effect pic](selectGoods.png)
+![Effect pic](selectGood.png)
 ##使用
    NSMutableDictionary *dic = [NSMutableDictionary dictionary];
     [dic setValue:@[@"L",@"l",@"M",@"l",@"M",@"l",@"M",@"l",@"M",@"l",@"M",@"l",@"M",@"l",@"M",@"l",@"M"] forKey:@"尺寸"];
