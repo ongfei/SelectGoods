@@ -25,15 +25,23 @@
     self = [super initWithFrame:frame];
     if (self) {
         
+        self.backgroundColor = [UIColor whiteColor];
         UIButton *lastBtn = nil;
         CGFloat Height = 30;
         for (int i = 0; i < arr.count; i++) {
             
             UIButton *btn = [UIButton buttonWithType:(UIButtonTypeCustom)];
             
-            CGFloat left = lastBtn == nil ? 0 : (lastBtn.right > (ScreenWidth - 20) ? 0 :lastBtn.right);
+            CGFloat ri = [self getWidthWithfont:13 andStr:arr[i]] < 50 ? 50 : [self getWidthWithfont:13 andStr:arr[i]];
             
-            CGFloat top = lastBtn == nil ? 5 :(lastBtn.right > (ScreenWidth - 30) ? lastBtn.bottom + 5 :lastBtn.top);
+            CGFloat left = lastBtn == nil ? 0 : (lastBtn.right + ri > self.right -20 ? 0 :lastBtn.right);
+            
+            CGFloat top = lastBtn == nil ? 5 :(lastBtn.right + ri > self.right -30 ? lastBtn.bottom + 5 :lastBtn.top);
+            
+            if (lastBtn != nil) {
+                
+                lastBtn.right + ri > (self.right -30) ?  Height += 30 : Height;
+            }
             
             btn.frame = CGRectMake(left + 10, top, [self getWidthWithfont:13 andStr:arr[i]] < 50 ? 50 : [self getWidthWithfont:13 andStr:arr[i]], 30);
             
@@ -61,7 +69,6 @@
             
             [btn addTarget:self action:@selector(touchBtn:) forControlEvents:UIControlEventTouchUpInside];
             
-            lastBtn.right > (ScreenWidth - 30) ?  Height += 30 : Height;
             
             lastBtn = btn;
         }
