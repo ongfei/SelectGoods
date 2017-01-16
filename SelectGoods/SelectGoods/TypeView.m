@@ -36,7 +36,7 @@
             
             CGFloat left = lastBtn == nil ? 0 : (lastBtn.right + ri > self.right -20 ? 0 :lastBtn.right);
             
-            CGFloat top = lastBtn == nil ? 5 :(lastBtn.right + ri > self.right -30 ? lastBtn.bottom + 5 :lastBtn.top);
+            CGFloat top = lastBtn == nil ? 5 :(lastBtn.right + ri > self.right -20 ? lastBtn.bottom + 5 :lastBtn.top);
             
             if (lastBtn != nil) {
                 
